@@ -1,7 +1,7 @@
 import yaml
 from ophyd import Device
 
-from qtpy.QtWidgets import QWidget, QListView, QPushButton, QSplitter, QVBoxLayout, QCheckBox
+from qtpy.QtWidgets import QWidget, QListView, QPushButton, QSplitter, QVBoxLayout
 from qtpy.QtCore import QItemSelectionModel, Qt, QMimeData
 from qtpy.QtGui import QStandardItemModel, QClipboard, QGuiApplication
 from xicam.plugins import manager as pluginmanager
