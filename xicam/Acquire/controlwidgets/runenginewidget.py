@@ -1,7 +1,7 @@
 import yaml
 from ophyd import Device
 
-from qtpy.QtWidgets import QWidget, QListView, QPushButton, QSplitter, QVBoxLayout
+from qtpy.QtWidgets import QWidget, QListView, QPushButton, QSplitter, QVBoxLayout, QCheckBox
 from qtpy.QtCore import QItemSelectionModel, Qt, QMimeData
 from qtpy.QtGui import QStandardItemModel, QClipboard, QGuiApplication
 from xicam.plugins import manager as pluginmanager
@@ -17,6 +17,7 @@ empty_parameter = parameterTypes.GroupParameter(name='No parameters')
 class RunEngineWidget(QWidget):
     def __init__(self, *args, **kwargs):
         super(RunEngineWidget, self).__init__(*args, **kwargs)
+        self.auto_copy_to_clipboard_on_run = True
 
         self.planview = QListView()
         self.plansmodel = pluginmanager.get_plugin_by_name('plans',
@@ -29,8 +30,10 @@ class RunEngineWidget(QWidget):
 
         self.metadata = MetadataWidget()
 
-        self.copybutton = QPushButton('\u2398' + ' Copy parameters to clipboard')
-        self.runbutton = QPushButton('Run')
+        if self.auto_copy_to_clipboard_on_run:
+            self.runbutton = QPushButton('Run + Copy to clipboard')
+        else:
+            self.runbutton = QPushButton('Run')
         self.pausebutton = QPushButton('Pause')
         self.resumebutton = QPushButton('Resume')
         self.abortbutton = QPushButton('Abort')
@@ -48,7 +51,7 @@ class RunEngineWidget(QWidget):
         self.runlayout = QVBoxLayout()
         self.runlayout.setContentsMargins(0, 0, 0, 0)
         self.runlayout.addWidget(self.parameterview)
-        self.runlayout.addWidget(self.copybutton)
+        # self.runlayout.addWidget(self.copybutton)
         self.runlayout.addWidget(self.runbutton)
         self.runlayout.addWidget(self.pausebutton)
         self.runlayout.addWidget(self.resumebutton)
@@ -64,7 +67,8 @@ class RunEngineWidget(QWidget):
         # Wireup signals
         self.selectionmodel.currentChanged.connect(self.showPlan)
         self.plansmodel.dataChanged.connect(self.showPlan)
-        self.copybutton.clicked.connect(self.copy)
+        if self.auto_copy_to_clipboard_on_run:
+            self.runbutton.clicked.connect(self.copy)
         self.runbutton.clicked.connect(self.run)
         self.abortbutton.clicked.connect(self.abort)
         self.pausebutton.clicked.connect(self.pause)
