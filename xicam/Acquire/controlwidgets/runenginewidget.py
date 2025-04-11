@@ -161,11 +161,13 @@ class RunEngineWidget(QWidget):
     def _started(self):
         self.abortbutton.setEnabled(True)
         self.pausebutton.setEnabled(True)
+        self.copybutton.setEnabled(False)
         self._resumed()
 
     def _finished(self):
         self.abortbutton.setEnabled(False)
         self.pausebutton.setEnabled(False)
+        self.copybutton.setEnabled(True)
 
     def _aborted(self):
         self._finished()
